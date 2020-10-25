@@ -1,67 +1,43 @@
-import { Button } from 'react-bootstrap'
-import Head from 'next/head'
-import styles from '../styles/Home.module.css'
+import { Button, Col, Container, Form, Row } from 'react-bootstrap'
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+const io = require('socket.io-client');
 
 export default function Home() {
+  const [socket, setSocket] = useState(null);
+  const [username, setUsername] = useState('');
+  const [router, setRouter] = useState(useRouter());
+
+  useEffect(() => {
+    const currentSocket = io('http://localhost:5500');
+    setSocket(currentSocket);
+    
+    currentSocket.on('new-user', newUser => {
+      localStorage.setItem('user', JSON.stringify(newUser));
+      currentSocket.disconnect();
+      router.push('/lobbies');
+    });
+  }, []);
+
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    socket.emit('new-user', { username });
+  }
+
   return (
-    <div className={styles.container}>
-      <Head>
-        <title>Create Next App</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <main className={styles.main}>
-        <Button>dsadsa</Button>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
-
-        <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h3>Documentation &rarr;</h3>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h3>Learn &rarr;</h3>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h3>Examples &rarr;</h3>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/import?filter=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h3>Deploy &rarr;</h3>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
-        </div>
-      </main>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{' '}
-          <img src="/vercel.svg" alt="Vercel Logo" className={styles.logo} />
-        </a>
-      </footer>
-    </div>
+    <Container>
+      <Row>
+        <Col>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group>
+              <Form.Label>Enter a Nickname</Form.Label>
+              <Form.Control type="text" placeholder="nickname" onChange={event => setUsername(event.target.value)}/>
+            </Form.Group>
+            <Button type="submit">Login</Button>
+          </Form>
+        </Col>
+      </Row>
+    </Container>
   )
 }

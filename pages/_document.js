@@ -8,6 +8,7 @@ export default class MyDocument extends Document {
     return (
       <Html lang="en">
         <Head>
+          <script src="http://localhost:5500/socket.io/socket.io.js" />
         </Head>
         <body>
           <Main />
