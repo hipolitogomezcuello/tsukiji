@@ -45,6 +45,15 @@ const Pregame = () => {
         router.push('/game');
       }
     });
+
+    socket.on('delete-lobby', lobby => {
+      const currentLobby = getCurrentLobby();
+      if (lobby.id === currentLobby.id) {
+        localStorage.removeItem('currentLobby');
+        socket.disconnect();
+        router.push('/lobbies');
+      }
+    })
   }
 
   const getUsers = (socket) => {
@@ -61,6 +70,9 @@ const Pregame = () => {
 
   const startGame = () => {
     socket.emit('start-game', getCurrentLobby());
+  }
+  const deleteLobby = () => {
+    socket.emit('delete-lobby', getCurrentLobby());
   }
 
   const getCurrentLobby = () => {
@@ -79,6 +91,9 @@ const Pregame = () => {
         </Col>
         <Col>
           <Button onClick={startGame}>Start Game</Button>
+        </Col>
+        <Col>
+          <Button onClick={deleteLobby}>Delete Lobby</Button>
         </Col>
       </Row>
       <Row>
