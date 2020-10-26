@@ -75,8 +75,8 @@ const Lobbies = () => {
               </tr>
             </thead>
             <tbody>
-              { lobbies.length > 0 && lobbies.map(lobby => 
-                <tr>
+              { lobbies.length > 0 && lobbies.map((lobby, i) => 
+                <tr key={i}>
                   <td>{ lobby.name }</td>
                   <td>
                     <Button onClick={() => joinLobby(lobby)}>Join</Button>

@@ -23,11 +23,16 @@ const Pregame = () => {
     });
 
     socket.on('user-joined-lobby', data => {
+      console.log(usersRef.current);
+      console.log(data.user);
       const currentLobby = getCurrentLobby();
       if (data.lobby.id === currentLobby.id) {
-        setUsers([...usersRef.current, data.user]);
+        const newUsers = [...usersRef.current, data.user];
+        setUsers(newUsers);
+        currentLobby.users = newUsers;
+        localStorage.setItem('currentLobby', JSON.stringify(currentLobby));
       }
-    })
+    });
 
     socket.on('user-left-lobby', data => {
       const currentLobby = getCurrentLobby();
@@ -106,8 +111,8 @@ const Pregame = () => {
               </tr>
             </thead>
             <tbody>
-              { users.length > 0 && users.map(user => 
-                <tr>
+              { users.length > 0 && users.map((user, i) => 
+                <tr key={i}>
                   <td>{user.username}</td>
                 </tr>
               )}
