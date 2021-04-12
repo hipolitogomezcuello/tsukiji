@@ -1,0 +1,8 @@
+#9D5012 fugu
+#504A43 hotategai
+#C26CB9 tako
+#FF052F ebi
+#FF9524 sake
+
+#45C230 takusan
+#81002C maguro
